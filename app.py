@@ -759,7 +759,6 @@ with tab2:
             st.info("👈 Selecione ações para criar o plano")
 
 # ============================================================================
-# ============================================================================
 # ABA 3: DASHBOARD COM GRÁFICO RADAR E PRIORIDADES
 # ============================================================================
 
@@ -856,8 +855,6 @@ with tab3:
 # ============================================================================
 
 with tab4:
-    st.subheader("Resumo e Geração de Relatório")
-with tab3:
     st.subheader("Resumo e Geração de Relatório")
     
     if not st.session_state.acoes_selecionadas:
