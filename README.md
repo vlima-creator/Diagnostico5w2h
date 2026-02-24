@@ -1,0 +1,1 @@
+# Diagnostico5w2h
