@@ -70,18 +70,18 @@ BANCO_ACOES = [
     },
     {
         "id": 3,
-        "acao": "Contratar RP (responsavel por performance)",
-        "categoria": "Pessoas",
-        "what": "Contratar ou alocar um responsável por performance para rotina de campanhas, indicadores e priorização.",
-        "why": "Ganhar dono do número, acelerar aprendizado e reduzir desperdício de verba e de tempo.",
-        "where": "Operação de marketplaces e mídia, com atuação diária.",
-        "how": "1) Definir KPIs e rotina (diária e semanal)\n2) Perfil e senioridade necessária\n3) Processo seletivo (triagem, entrevista, teste)\n4) Onboarding com playbook e ferramentas\n5) Rituais: daily rápido, revisão semanal, retro mensal\n6) Definir metas de performance para 30 dias\n7) Primeira semana de acompanhamento intensivo",
-        "indicadores": "ROAS, ACOS, GMV, margem, taxa de conversão, share de impressão",
+        "acao": "Implementar ERP (sistema de integracao)",
+        "categoria": "Sistemas",
+        "what": "Selecionar, configurar e implementar um ERP para integracao de dados de vendas, estoque e financeiro.",
+        "why": "Centralizar informacoes, reduzir erros manuais, melhorar visibilidade operacional e facilitar decisoes baseadas em dados.",
+        "where": "Sistemas internos da empresa, integrando marketplaces, estoque e financeiro.",
+        "how": "1) Definir requisitos e necessidades do negocio\n2) Pesquisar e avaliar opcoes de ERP (Bling, Omie, SAP, etc)\n3) Negociar contrato e implementacao\n4) Configurar modulos (vendas, estoque, financeiro)\n5) Integrar com marketplaces e canais\n6) Treinar equipe no novo sistema\n7) Monitorar e ajustar conforme necessario",
+        "indicadores": "Tempo de implementacao, taxa de adocao, reducao de erros, tempo de resposta, acuracia de estoque",
         "dia_inicio_padrao": 1,
         "duracao_dias": 30,
         "custo_padrao": 0,
-        "impacto_padrao": 4,
-        "esforco_padrao": 4
+        "impacto_padrao": 5,
+        "esforco_padrao": 5
     },
     {
         "id": 4,
