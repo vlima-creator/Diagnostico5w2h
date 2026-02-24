@@ -342,7 +342,7 @@ def calcular_score(impacto, esforco):
     """Calcula o score: (Impacto × 10) - (Esforço × 2)"""
     return (impacto * 10) - (esforco * 2)
 
-def adicionar_acao(acao_id, observacao=""):
+def adicionar_acao(acao_id, observacao="", duracao_customizada=None):
     """Adiciona uma ação ao histórico"""
     acao = obter_acao_por_id(acao_id)
     if acao:
@@ -351,7 +351,7 @@ def adicionar_acao(acao_id, observacao=""):
             "id": acao_id,
             "acao": acao["acao"],
             "categoria": acao["categoria"],
-            "duracao_dias": acao["duracao_dias"],
+            "duracao_dias": duracao_customizada if duracao_customizada is not None else acao["duracao_dias"],
             "impacto": acao["impacto"],
             "esforco": acao["esforco"],
             "score": score,
@@ -564,7 +564,7 @@ def gerar_pdf_relatorio(cliente_data, acoes_selecionadas, observacoes):
             <b>WHAT (O quê):</b> {acao_completa['what']}<br/>
             <b>WHY (Por quê):</b> {acao_completa['why']}<br/>
             <b>WHERE (Onde):</b> {acao_completa['where']}<br/>
-            <b>Duração:</b> {acao_completa['duracao_dias']} dias<br/>
+            <b>Duração:</b> {acao_selecionada['duracao_dias']} dias<br/>
             <b>Indicadores:</b> {acao_completa['indicadores']}<br/>
             """
             
@@ -703,8 +703,14 @@ with tab2:
                     st.caption(f"⭐ Score: {score}")
             
             with col2:
+                duracao_input = st.number_input(
+                    "Duração (dias)",
+                    min_value=1,
+                    value=acao["duracao_dias"],
+                    key=f"duracao_input_{acao['id']}"
+                )
                 if st.button("Adicionar", key=f"add_{acao['id']}", use_container_width=True):
-                    adicionar_acao(acao['id'])
+                    adicionar_acao(acao["id"], duracao_customizada=duracao_input)
                     st.success(f"✅ {acao['acao']} adicionada!")
                     st.rerun()
         

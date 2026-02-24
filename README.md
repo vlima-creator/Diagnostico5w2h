@@ -7,6 +7,7 @@ Um aplicativo Streamlit interativo para reuniões de start com clientes, que per
 - **Captura de Reunião**: Interface intuitiva para preencher dados da reunião de start
 - **Banco de 20 Ações Pré-definidas**: Ações estratégicas com 5W2H já estruturado
 - **Customização Automática**: Ajuste duração, impacto e esforço conforme necessário
+- **Ajuste de Prazo**: Opção para ajustar o prazo (dias) de cada ação individualmente. Caso não seja preenchido, o prazo pré-determinado será utilizado.
 - **Cálculo de Score**: Score automático baseado em Impacto e Esforço
 - **Plano 5W2H Completo**: What, Why, Where, When, Who, How, How Much
 - **Timeline Visual**: Gráfico Gantt com a duração da ação
@@ -150,6 +151,10 @@ CONFIG = {
 }
 ```
 
+### Ajustar Duração das Ações
+
+Na aba "Selecionar Ações", ao adicionar uma ação, um campo "Duração (dias)" será exibido. Você pode alterar o valor padrão para customizar o prazo da ação. Se o campo for deixado com o valor padrão, ele será utilizado.
+
 ## 📋 Estrutura do Plano 5W2H
 
 | Campo | Descrição | Exemplo |
@@ -201,5 +206,5 @@ Desenvolvido para otimizar reuniões de start com clientes e estruturar planos d
 
 ---
 
-**Versão:** 1.0.0  
+**Versão:** 1.1.0  
 **Última atualização:** Fevereiro 2026
