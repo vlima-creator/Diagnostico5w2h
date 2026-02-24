@@ -383,8 +383,8 @@ def gerar_grafico_radar(acoes_selecionadas):
         theta=todas_categorias,
         fill='toself',
         name='Acoes por Categoria',
-        line=dict(color='#1E3A8A'),
-        fillcolor='rgba(30, 58, 138, 0.3)',
+        line=dict(color='#3B82F6', width=2),
+        fillcolor='rgba(59, 130, 246, 0.15)',
         hovertemplate='<b>%{theta}</b><br>Acoes: %{r}<extra></extra>'
     ))
     
@@ -404,7 +404,7 @@ def gerar_grafico_radar(acoes_selecionadas):
         hovermode='closest',
         title=dict(
             text='<b>Analise de Deficiencias por Categoria</b>',
-            font=dict(size=16, color='#1E3A8A')
+            font=dict(size=16, color='#0F172A', family='Segoe UI')
         )
     )
     
@@ -584,24 +584,161 @@ def gerar_pdf_relatorio(cliente_data, acoes_selecionadas, observacoes):
 # ============================================================================
 
 # Header
+# Aplicar tema global moderno
 st.markdown("""
 <style>
-    .header {
-        background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
-        padding: 2rem;
-        border-radius: 10px;
-        color: white;
-        margin-bottom: 2rem;
+    * {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+    
+    [data-testid="stAppViewContainer"] {
+        background-color: #FFFFFF;
+    }
+    
+    [data-testid="stSidebar"] {
+        background-color: #F8FAFC;
+    }
+    
+    .header {
+        background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #3B82F6 100%);
+        padding: 3rem 2rem;
+        border-radius: 15px;
+        color: white;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 10px 30px rgba(30, 58, 138, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
     .header h1 {
         margin: 0;
-        font-size: 2.5rem;
+        font-size: 2.8rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
     }
+    
     .header p {
-        margin: 0.5rem 0 0 0;
-        font-size: 1.1rem;
-        opacity: 0.9;
+        margin: 0.8rem 0 0 0;
+        font-size: 1.15rem;
+        opacity: 0.95;
+        font-weight: 300;
+        letter-spacing: 0.3px;
     }
+    
+    .action-card {
+        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+        border: 1.5px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    
+    .action-card:hover {
+        border-color: #3B82F6;
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.12);
+        transform: translateY(-2px);
+    }
+    
+    .metric-card {
+        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+        border: 1.5px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+    }
+    
+    .metric-card:hover {
+        border-color: #3B82F6;
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.12);
+    }
+    
+    .priority-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #3B82F6 0%, #1E40AF 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    
+    .section-title {
+        color: #0F172A;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #3B82F6;
+    }
+    
+    .info-box {
+        background: linear-gradient(135deg, #EFF6FF 0%, #F0F9FF 100%);
+        border-left: 4px solid #3B82F6;
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        margin: 1rem 0;
+        color: #1E40AF;
+    }
+    
+    .success-box {
+        background: linear-gradient(135deg, #F0FDF4 0%, #F7FEE7 100%);
+        border-left: 4px solid #22C55E;
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        margin: 1rem 0;
+        color: #166534;
+    }
+    
+    .warning-box {
+        background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+        border-left: 4px solid #F59E0B;
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        margin: 1rem 0;
+        color: #92400E;
+    }
+    
+    .footer {
+        text-align: center;
+        color: #64748B;
+        font-size: 0.9rem;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1.5px solid #E2E8F0;
+    }
+    
+    .footer p {
+        margin: 0.5rem 0;
+    }    
+    [data-testid="stTabs"] [role="tablist"] {
+        border-bottom: 2px solid #E2E8F0;
+    }
+    
+    [data-testid="stTabs"] [role="tab"] {
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        color: #64748B;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+    
+    [data-testid="stTabs"] [role="tab"][aria-selected="true"] {
+        color: #3B82F6;
+        border-bottom-color: #3B82F6;
+    }
+    
+    [data-testid="stTabs"] [role="tab"]:hover {
+        color: #1E3A8A;
+    }
+    
+    [data-testid="stMarkdownContainer"] {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
 </style>
 <div class="header">
     <h1>📋 Diagnóstico 5W2H</h1>
@@ -838,7 +975,7 @@ with tab3:
                 y=categorias_count.index,
                 x=categorias_count.values,
                 orientation='h',
-                marker=dict(color='#1E3A8A'),
+                marker=dict(color='#3B82F6', line=dict(color='#1E40AF', width=1)),
                 text=categorias_count.values,
                 textposition='auto',
                 hovertemplate='<b>%{y}</b><br>Ações: %{x}<extra></extra>'
@@ -925,10 +1062,10 @@ with tab4:
         )
 
 # Footer
-st.markdown("---")
 st.markdown("""
-<div style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 2rem;">
-    <p>Diagnóstico 5W2H v3.0 | Funcional para Reuniões de Start</p>
-    <p>Desenvolvido para capturar dados do cliente e gerar planos de ação profissionais</p>
+<div class="footer">
+    <p><strong>Diagnóstico 5W2H</strong> v1.1.0 | Gerador de Planos de Ação</p>
+    <p>Desenvolvido para otimizar reuniões de start e estruturar planos estratégicos</p>
+    <p style="margin-top: 1rem; font-size: 0.8rem; color: #94A3B8;">© 2026 - Todos os direitos reservados</p>
 </div>
 """, unsafe_allow_html=True)
