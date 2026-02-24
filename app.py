@@ -604,14 +604,6 @@ st.markdown("""
         font-size: 1.1rem;
         opacity: 0.95;
     }
-    .metric-box {
-        background: white;
-        border-left: 4px solid #3B82F6;
-        padding: 1.5rem;
-        border-radius: 8px;
-        margin: 1rem 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
     .footer {
         text-align: center;
         color: #666;
