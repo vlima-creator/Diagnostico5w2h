@@ -768,78 +768,98 @@ with tab2:
         else:
             st.info("👈 Selecione ações para criar o plano")
 
-# ============================================================================
-# ABA 3: RESUMO E RELATÓRIO
-# ============================================================================
 
+# ============================================================================
+# ABA 3: DASHBOARD COM GRÁFICO RADAR E PRIORIDADES
+# ============================================================================
 with tab3:
-    st.subheader("Resumo e Geração de Relatório")
+    st.subheader("📊 Análise e Priorização")
     
     if not st.session_state.acoes_selecionadas:
-        st.warning("⚠️ Selecione pelo menos uma ação na aba anterior!")
+        st.warning("⚠️ Selecione ações na aba anterior para visualizar o dashboard!")
     else:
-        # Observações gerais
-        st.markdown("---")
-        st.subheader("Observações Gerais da Reunião")
-        
-        st.session_state.observacoes = st.text_area(
-            "Adicione observações, restrições, combinados ou notas importantes",
-            value=st.session_state.observacoes,
-            height=150,
-            placeholder="Ex: Cliente tem restrição orçamentária, priorizar ações de baixo custo..."
-        )
-        
-        st.markdown("---")
-        st.subheader("Resumo do Plano")
-        
-        # Exibir resumo
-        col1, col2, col3, col4 = st.columns(4)
-        
-        total_acoes = len(st.session_state.acoes_selecionadas)
-        duracao_total = sum(a["duracao_dias"] for a in st.session_state.acoes_selecionadas)
-        impacto_medio = sum(a["impacto"] for a in st.session_state.acoes_selecionadas) / total_acoes
-        score_total = sum(a["score"] for a in st.session_state.acoes_selecionadas)
+        # Gráfico Radar
+        col1, col2 = st.columns([0.6, 0.4])
         
         with col1:
-            st.metric("Total de Ações", total_acoes)
+            st.markdown("### Gráfico Radar - Deficiências por Categoria")
+            fig_radar = gerar_grafico_radar(st.session_state.acoes_selecionadas)
+            if fig_radar:
+                st.plotly_chart(fig_radar, use_container_width=True)
+        
         with col2:
-            st.metric("Duração Total", f"{duracao_total} dias")
-        with col3:
-            st.metric("Impacto Médio", f"{impacto_medio:.1f}/5")
-        with col4:
-            st.metric("Score Total", score_total)
+            st.markdown("### Top 3 Categorias de Prioridade")
+            prioridades = calcular_prioridades(st.session_state.acoes_selecionadas)
+            
+            if prioridades:
+                for idx, prioridade in enumerate(prioridades, 1):
+                    cores = ['#DC2626', '#F59E0B', '#3B82F6']
+                    cor = cores[idx - 1]
+                    
+                    st.markdown(f"""
+                    <div style="
+                        background-color: {cor};
+                        color: white;
+                        padding: 15px;
+                        border-radius: 8px;
+                        margin-bottom: 10px;
+                        border-left: 5px solid {cor};
+                    ">
+                        <h3 style="margin: 0 0 10px 0; font-size: 18px;">🎯 {idx}º - {prioridade['categoria']}</h3>
+                        <p style="margin: 5px 0;"><b>Ações:</b> {prioridade['qtd_acoes']}</p>
+                        <p style="margin: 5px 0;"><b>Impacto Médio:</b> {prioridade['impacto_medio']:.1f}/5</p>
+                        <p style="margin: 5px 0;"><b>Score:</b> {prioridade['score_prioridade']:.1f}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
         
         st.markdown("---")
-        st.subheader("Ações Selecionadas")
+        st.markdown("### Estatísticas Detalhadas por Categoria")
         
         df_acoes = pd.DataFrame(st.session_state.acoes_selecionadas)
-        df_exibicao = df_acoes[["acao", "categoria", "duracao_dias", "impacto", "esforco", "score"]].copy()
-        df_exibicao.columns = ["Ação", "Categoria", "Duração (dias)", "Impacto", "Esforço", "Score"]
         
-        st.dataframe(df_exibicao, use_container_width=True, hide_index=True)
+        stats_por_categoria = []
+        for categoria in sorted(df_acoes['categoria'].unique()):
+            df_cat = df_acoes[df_acoes['categoria'] == categoria]
+            stats_por_categoria.append({
+                'Categoria': categoria,
+                'Qtd Ações': len(df_cat),
+                'Impacto Médio': f"{df_cat['impacto'].mean():.1f}/5",
+                'Esforço Médio': f"{df_cat['esforco'].mean():.1f}/5",
+                'Duração Total': f"{df_cat['duracao_dias'].sum()} dias",
+                'Score Total': f"{df_cat['score'].sum()}"
+            })
+        
+        df_stats = pd.DataFrame(stats_por_categoria)
+        st.dataframe(df_stats, use_container_width=True, hide_index=True)
         
         st.markdown("---")
-        st.subheader("Gerar Relatório")
+        st.markdown("### Quantidade de Ações por Categoria")
         
-        # Botão para gerar PDF
-        pdf_buffer = gerar_pdf_relatorio(
-            st.session_state.cliente_data,
-            st.session_state.acoes_selecionadas,
-            st.session_state.observacoes
+        categorias_count = df_acoes['categoria'].value_counts().sort_values(ascending=True)
+        
+        fig_barras = go.Figure(data=[
+            go.Bar(
+                y=categorias_count.index,
+                x=categorias_count.values,
+                orientation='h',
+                marker=dict(color='#3B82F6'),
+                text=categorias_count.values,
+                textposition='auto',
+                hovertemplate='<b>%{y}</b><br>Ações: %{x}<extra></extra>'
+            )
+        ])
+        
+        fig_barras.update_layout(
+            title='Ações por Categoria',
+            xaxis_title='Quantidade de Ações',
+            yaxis_title='Categoria',
+            height=400,
+            showlegend=False,
+            hovermode='closest'
         )
         
-        st.download_button(
-            label="📄 Baixar Relatório em PDF",
-            data=pdf_buffer,
-            file_name=f"Plano_5W2H_{st.session_state.cliente_data['nome']}_{datetime.now().strftime('%d%m%Y')}.pdf",
-            mime="application/pdf",
-            use_container_width=True
-        )
+        st.plotly_chart(fig_barras, use_container_width=True)
 
-# Footer
-st.markdown("""
-<div class="footer">
-    <p><strong>Diagnóstico 5W2H</strong> v1.1.0 | Gerador de Planos de Ação</p>
-    <p>Desenvolvido para otimizar reuniões de start e estruturar planos estratégicos</p>
-</div>
-""", unsafe_allow_html=True)
+
+# ============================================================================
+# ABA 4: RESUMO E RELATÓRIO
