@@ -711,10 +711,19 @@ with tab2:
                 with m4:
                     score = calcular_score(acao['impacto'], acao['esforco'])
                     st.caption(f"⭐ Score: {score}")
+                
+                # Campo para ajustar a duração
+                duracao_customizada = st.number_input(
+                    "Duração (dias)",
+                    min_value=1,
+                    value=acao['duracao_dias'],
+                    key=f"dur_{acao['id']}",
+                    label_visibility="collapsed"
+                )
             
             with col2:
                 if st.button("Adicionar", key=f"add_{acao['id']}", use_container_width=True):
-                    adicionar_acao(acao['id'])
+                    adicionar_acao(acao['id'], duracao_customizada)
                     st.success(f"✅ {acao['acao']} adicionada!")
                     st.rerun()
         
