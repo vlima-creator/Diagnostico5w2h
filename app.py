@@ -871,4 +871,82 @@ with tab3:
 
 
 # ============================================================================
-# ABA 4: RESUMO E RELATÓRIO
+# ABA 4: RESUMO E RELATÓRIO# ============================================================================
+with tab4:
+    st.subheader("Resumo e Geração de Relatório")
+    
+    if not st.session_state.acoes_selecionadas:
+        st.warning("⚠️ Selecione pelo menos uma ação na aba anterior!")
+    else:
+        # Observações gerais
+        st.markdown("---")
+        st.subheader("Observações Gerais da Reunião")
+        
+        st.session_state.observacoes = st.text_area(
+            "Adicione observações, restrições, combinados ou notas importantes",
+            value=st.session_state.observacoes,
+            height=150,
+            placeholder="Ex: Cliente tem restrição orçamentária, priorizar ações de baixo custo..."
+        )
+        
+        st.markdown("---")
+        st.subheader("Resumo do Plano")
+        
+        # Exibir resumo
+        if st.session_state.acoes_selecionadas:
+            for idx, acao in enumerate(st.session_state.acoes_selecionadas, 1):
+                st.markdown(f"**{idx}. {acao['acao']}**")
+                st.caption(f"{acao['categoria']} | {acao['duracao_dias']}d | Impacto: {acao['impacto']}/5")
+                
+                if acao.get("observacao"):
+                    st.caption(f"📝 Observação: {acao['observacao']}")
+                
+                st.divider()
+            
+            # Estatísticas
+            st.markdown("---")
+            st.subheader("Estatísticas do Plano")
+            
+            col1, col2, col3, col4 = st.columns(4)
+            
+            total_acoes = len(st.session_state.acoes_selecionadas)
+            duracao_total = sum(a["duracao_dias"] for a in st.session_state.acoes_selecionadas)
+            impacto_medio = sum(a["impacto"] for a in st.session_state.acoes_selecionadas) / total_acoes
+            score_total = sum(a["score"] for a in st.session_state.acoes_selecionadas)
+            
+            with col1:
+                st.metric("Total de Ações", total_acoes)
+            with col2:
+                st.metric("Duração Total", f"{duracao_total} dias")
+            with col3:
+                st.metric("Impacto Médio", f"{impacto_medio:.1f}/5")
+            with col4:
+                st.metric("Score Total", score_total)
+        else:
+            st.info("👈 Selecione ações para criar o plano")
+
+        st.markdown("---")
+        st.subheader("Gerar Relatório em PDF")
+        
+        if st.button("📄 Gerar Relatório PDF", use_container_width=True):
+            pdf_buffer = gerar_pdf_relatorio(
+                st.session_state.cliente_data,
+                st.session_state.acoes_selecionadas,
+                st.session_state.observacoes
+            )
+            
+            st.download_button(
+                label="📄 Baixar Relatório em PDF",
+                data=pdf_buffer,
+                file_name=f"Plano_5W2H_{st.session_state.cliente_data['nome']}_{datetime.now().strftime('%d%m%Y')}.pdf",
+                mime="application/pdf",
+                use_container_width=True
+            )
+
+# Footer
+st.markdown("""
+<div class="footer">
+    <p><strong>Diagnóstico 5W2H</strong> v1.1.0 | Gerador de Planos de Ação</p>
+    <p>Desenvolvido para otimizar reuniões de start e estruturar planos estratégicos</p>
+</div>
+""", unsafe_allow_html=True)
